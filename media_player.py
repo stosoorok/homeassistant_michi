@@ -145,8 +145,8 @@ class RotelDevice(MediaPlayerEntity):
         self.send_request('mute_%s!' % (mute is True and 'on' or 'off'))
 
     def handle_incoming(self, key, value):
+        _LOGGER.debug(f'ROTEL: handle incoming: {key} => {value}')
         if key == 'volume':
-            _LOGGER.debug("got volume" + value)
             self._attr_volume_level = int(value) / 100
         elif key == 'power':
             if value == 'on':
@@ -187,8 +187,10 @@ class RotelProtocol(asyncio.Protocol):
         _LOGGER.debug('ROTEL: Transport initialized')
 
     def data_received(self, data):
+        _LOGGER.debug('ROTEL: Data received {!r}'.format(data.decode()))
         try:
             self._msg_buffer += data.decode()
+            _LOGGER.debug(f'ROTEL: msg buffer: {self._msg_buffer}')
             commands = self._msg_buffer.split('$')
 
             # check for incomplete commands
