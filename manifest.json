@@ -1,0 +1,14 @@
+{
+  "domain": "roteltcp",
+  "name": "RotelTCP",
+  "codeowners": [
+    "@elric91",
+    "@matthijs-oosterhoff"
+  ],
+  "documentation": "",
+  "iot_class": "local_polling",
+  "loggers": [],
+  "requirements": [],
+  "integration_type": "device",
+  "version": "0.1.0"
+}
