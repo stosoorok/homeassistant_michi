@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import traceback
-import voluptuous as vol
 import re
+
+import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.media_player import (
@@ -216,7 +216,6 @@ class RotelProtocol(asyncio.Protocol):
             # make sure internal state is propagated to the UI
             self._device.schedule_update_ha_state()
         except:
-            traceback.print_exc()
             _LOGGER.warning('ROTEL: Data received but not ready {!r}'.format(data.decode()))
 
     def connection_lost(self, exc):
