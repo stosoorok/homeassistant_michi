@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-
+import traceback
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
@@ -191,12 +191,17 @@ class RotelProtocol(asyncio.Protocol):
         try:
             self._msg_buffer += data.decode()
             _LOGGER.debug(f'ROTEL: msg buffer: {self._msg_buffer}')
+
             commands = self._msg_buffer.split('$')
 
             # check for incomplete commands
-            if commands[-1] != '':
+            if not self._msg_buffer.endswith('$'):
+                # last command not terminated, put it back on the buffer
                 self._msg_buffer = commands[-1]
-                commands.pop(-1)
+            else:
+                # command terminated properly, clear buffer
+                self._msg_buffer = ''
+            # last item is either empty or an unterminated command, get rid of it.
             commands.pop(-1)
 
             # workaround for undocumented message @start
@@ -210,6 +215,7 @@ class RotelProtocol(asyncio.Protocol):
             # make sure internal state is propagated to the UI
             self._device.schedule_update_ha_state()
         except:
+            traceback.print_exc()
             _LOGGER.warning('ROTEL: Data received but not ready {!r}'.format(data.decode()))
 
     def connection_lost(self, exc):
