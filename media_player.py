@@ -4,6 +4,7 @@ import asyncio
 import logging
 import traceback
 import voluptuous as vol
+import re
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.media_player import (
@@ -192,20 +193,20 @@ class RotelProtocol(asyncio.Protocol):
             self._msg_buffer += data.decode()
             _LOGGER.debug(f'ROTEL: msg buffer: {self._msg_buffer}')
 
-            commands = self._msg_buffer.split('$')
+            # According to the spec, all status updates are terminated with '$',
+            # In practice, it seems some status updates are terminated with '!', for example 'network_status=connected!'
+            commands = re.split('[$!]', self._msg_buffer)
 
             # check for incomplete commands
-            if not self._msg_buffer.endswith('$'):
-                # last command not terminated, put it back on the buffer
-                self._msg_buffer = commands[-1]
-            else:
+            if self._msg_buffer.endswith('$') or self._msg_buffer.endswith('!'):
                 # command terminated properly, clear buffer
                 self._msg_buffer = ''
+            else:
+                # last command not terminated, put it back on the buffer
+                self._msg_buffer = commands[-1]
+
             # last item is either empty or an unterminated command, get rid of it.
             commands.pop(-1)
-
-            # workaround for undocumented message @start
-            commands = [cmd for cmd in commands if cmd[:14] != 'network_status']
 
             #  update internal state depending on amp messages
             for cmd in commands:
