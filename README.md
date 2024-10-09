@@ -1,7 +1,7 @@
-# Rotel component for Home Assistant
+# Michi P5 component for Home Assistant
 Custom components for Home Assistant
 
-**Forked from**: [elric91/homeassistant_rotel](https://github.com/elric91/homeassistant_rotel)
+**Forked from**: [matthijs-oosterhoff/homeassistant_rotel](https://github.com/matthijs-oosterhoff/homeassistant_rotel)
 
 A media_player platform that can be used through HASS to :
 - turn on and off the amplifier
