@@ -22,7 +22,7 @@ DOMAIN = "roteltcp"
 
 _LOGGER = logging.getLogger(__name__)
 
-DEFAULT_PORT = 9590
+DEFAULT_PORT = 9596
 DEFAULT_NAME = "Rotel"
 
 SUPPORT_ROTEL = (
@@ -42,9 +42,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
-AUDIO_SOURCES = {'phono': 'Phono', 'cd': 'CD', 'tuner': 'Tuner', 'usb': 'USB',
-                 'opt1': 'Optical 1', 'opt2': 'Optical 2', 'coax1': 'Coax 1', 'coax2': 'Coax 2',
-                 'bluetooth': 'Bluetooth', 'pc_usb': 'PC USB', 'aux1': 'Aux 1', 'aux2': 'Aux 2'}
+AUDIO_SOURCES = {'cd': 'CD', 'coax1': 'Coax 1', 'coax2': 'Coax 2', 'coax3': 'Coax 3',
+                 'opt1': 'Optical 1', 'opt2': 'Optical 2', 'opt3': 'Optical 3', 
+                 'aux1': 'Aux 1', 'aux2': 'Aux 2', 'tuner': 'Tuner', 'phono': 'Phono', 
+                 'bluetooth': 'Bluetooth', 'bal_xlr1': 'XLR 1', 'bal_xlr2': 'XLR 2', 'pcusb': 'PC-USB',}
 
 
 async def async_setup_platform(
@@ -62,7 +63,7 @@ async def async_setup_platform(
 
 
 class RotelDevice(MediaPlayerEntity):
-    _attr_icon = "mdi:speaker-multiple"
+    _attr_icon = "mdi:audio-video"
     _attr_supported_features = SUPPORT_ROTEL
 
     def __init__(self, config):
@@ -135,7 +136,7 @@ class RotelDevice(MediaPlayerEntity):
 
     def volume_down(self) -> None:
         """Step volume down one increment."""
-        self.send_request('vol_down!')
+        self.send_request('vol_dwn!')
 
     def set_volume_level(self, volume: float) -> None:
         """Set volume level, range 0..1."""
@@ -153,7 +154,7 @@ class RotelDevice(MediaPlayerEntity):
             if value == 'on':
                 self._attr_state = MediaPlayerState.ON
             elif value == 'standby':
-                self._attr_state = MediaPlayerState.STANDBY
+                self._attr_state = MediaPlayerState.OFF
             else:
                 self._attr_state = None
                 self.send_request('power?')
